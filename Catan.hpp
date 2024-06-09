@@ -5,6 +5,8 @@
 #include "Board.hpp"
 #include <vector>
 
+namespace ariel{
+
 class Catan {
 private:
     std::vector<Player> players;
@@ -19,6 +21,8 @@ public:
     void play_turn();
     void check_winner();
     void printWinner();
+    void handle_development_card(Player &player, DevelopmentCard &card);
 };
-
+}
+ 
 #endif // CATAN_HPP

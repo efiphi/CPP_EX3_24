@@ -1,11 +1,13 @@
-// Catan.cpp
 #include "Catan.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 #include <random>
 #include <c++/11/bits/algorithmfwd.h>
 
-Catan::Catan(Player &p1, Player &p2, Player &p3) : players({p1, p2, p3}), current_turn(0) {}
+namespace ariel{
+ 
+Catan::Catan(Player &p1, Player &p2, Player &p3) : players({p1, p2, p3}), current_turn(0) {} 
 
 void Catan::ChooseStartingPlayer() {
     // Randomly choose a starting player
@@ -20,25 +22,38 @@ Board Catan::getBoard() const {
 }
 
 void Catan::start_game() {
-    // Initial setup for the game
     ChooseStartingPlayer();
-    // Each player places initial settlements and roads
     for (auto &player : players) {
-        // Example placements; these would be determined by the players
-        player.placeSettlement({"place1", "place2"}, {1, 2}, board);
-        player.placeRoad({"place1", "place2"}, {1, 2}, board);
+        // Example placements for the first settlement and road
+        player.placeSettlement({"wood", "brick"}, {8, 3}, board);
+        player.placeRoad({"wood", "brick"}, {8, 3}, board);
+        
+        // Example placements for the second settlement and road
+        player.placeSettlement({"wheat", "wool"}, {5, 4}, board);
+        player.placeRoad({"wheat", "wool"}, {5, 4}, board);
+        
+        // Give initial resources based on these placements
+        player.resources["wood"]++;
+        player.resources["brick"]++;
+        player.resources["wheat"]++;
+        player.resources["wool"]++;
+        std::cout << player.name << " receives initial resources: 1 wood, 1 brick, 1 wheat, 1 wool" << std::endl;
     }
 }
 
+
 void Catan::play_turn() {
     Player &current_player = players[current_turn];
-    current_player.rollDice();
-    // Player performs actions: trading, building, using development cards
-    // Implementation of player actions
+    std::cout << "It's " << current_player.name << "'s turn." << std::endl;
+    current_player.rollDice(board);
+    
+    // Additional actions could be added here such as trading, building, etc.
+    
     current_player.endTurn();
     current_turn = (current_turn + 1) % players.size();
     check_winner();
 }
+
 
 void Catan::check_winner() {
     for (const auto &player : players) {
@@ -51,4 +66,9 @@ void Catan::check_winner() {
 
 void Catan::printWinner() {
     std::cout << "No winner yet." << std::endl;
+}
+
+void Catan::handle_development_card(Player &player, DevelopmentCard &card) {
+    card.apply_effect(player, *this);
+}
 }

@@ -4,6 +4,12 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "DevelopmentCard.hpp"
+
+namespace ariel {
+
+class Board; 
+class Catan;
 
 class Player {
 public:
@@ -14,6 +20,7 @@ public:
     std::vector<std::string> settlements;
     std::vector<std::string> cities;
     std::vector<std::string> roads;
+    std::vector<DevelopmentCard> development_cards;
 
     Player(const std::string &name);
 
@@ -21,10 +28,15 @@ public:
     void placeRoad(const std::vector<std::string> &places, const std::vector<int> &placesNum, Board &board);
     void rollDice(Board &board);
     void trade(Player &other, const std::string &give, const std::string &receive, int give_amount, int receive_amount);
-    void buyDevelopmentCard();
-    void useDevelopmentCard(DevelopmentCard &card);
+    void buyDevelopmentCard(Catan &game);
+    void useDevelopmentCard(DevelopmentCard &card, Catan &game);
     void endTurn();
     void printPoints() const;
+ 
+private:
+    DevelopmentCard getRandomDevelopmentCard();
 };
+
+}
 
 #endif // PLAYER_HPP

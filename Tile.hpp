@@ -4,16 +4,20 @@
 #include <string>
 #include <vector>
 
-class Player; // Forward declaration of Player class
+namespace ariel {
+
+class Player; 
 
 class Tile {
 public:
     std::string resource_type;
     int number;
-    std::vector<Player*> adjacent_settlements; // Add adjacent_settlements
+    std::vector<Player*> adjacent_settlements;
 
     Tile(const std::string &resource, int number);
     void addSettlement(Player* player);
 };
 
+}
+ 
 #endif // TILE_HPP
