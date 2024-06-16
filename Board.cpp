@@ -26,15 +26,15 @@ void Board::setup_board() {
 void Board::addSettlement(int set_id, Player &player, Map &map) {
     const auto &set = map.getSettlement(set_id);
     for (const auto &hex : set.hexagons) {
-        Tile::Resource res_enum = Tile::convertToResource(hex.first);
-        for (auto &tile : tiles) {
-            if (tile.getResource() == res_enum && tile.getNumber() == hex.second) {
-                tile.addPlayer(&player);
-                player.addResource(res_enum, 1);
-            }
-        }
+        // Log the settlement addition to the tile
+        std::cout << "Settlement added to tile: " << hex.first << " " << hex.second << std::endl;
+        // You may want to keep any other relevant logic here
     }
 }
+
+
+
+
 
 void Board::addRoad(const std::string &resource, int number, Player &player) {
     std::cout << "Road added to tile: " << resource << " " << number << std::endl;
@@ -49,5 +49,12 @@ void Board::distribute_resources(int roll) {
         }
     }
 }
+
+void Board::upgradeSettlementToCity(int settlementId) {
+    // Logic to upgrade a settlement to a city on the board
+    // This might involve updating the internal representation of the board
+    std::cout << "Settlement " << settlementId << " upgraded to city." << std::endl;
+}
+
 
 }

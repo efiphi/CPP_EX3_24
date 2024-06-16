@@ -6,8 +6,14 @@ OBJS = main.o Board.o Tile.o Player.o DevelopmentCard.o Catan.o Map.o
 catan: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o catan $(OBJS)
 
+test: test.o Board.o Tile.o Player.o DevelopmentCard.o Catan.o Map.o
+	$(CXX) $(CXXFLAGS) -o catan_test test.o Board.o Tile.o Player.o DevelopmentCard.o Catan.o Map.o
+
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
+
+test.o: test.cpp
+	$(CXX) $(CXXFLAGS) -c test.cpp
 
 Board.o: Board.cpp Board.hpp
 	$(CXX) $(CXXFLAGS) -c Board.cpp
@@ -28,4 +34,4 @@ Map.o: Map.cpp Map.hpp
 	$(CXX) $(CXXFLAGS) -c Map.cpp
 
 clean:
-	rm -f *.o catan
+	rm -f *.o catan catan_test

@@ -37,22 +37,18 @@ void Catan::play_turn() {
     check_winner();
     current_turn = (current_turn + 1) % players.size();
 }
-
-void Catan::check_winner() {
-    for (const auto& player : players) {
+Player* Catan::check_winner() {
+    for (auto& player : players) {
         if (player.getVictoryPoints() >= 10) {
-            printWinner();
-            exit(0); // End game
+            printWinner(player);
+            return &player; // Return pointer to the winning player
         }
     }
+    return nullptr; // No winner yet
 }
 
-void Catan::printWinner() {
-    for (const auto& player : players) {
-        if (player.getVictoryPoints() >= 10) {
-            std::cout << player.getName() << " wins the game with " << player.getVictoryPoints() << " points!" << std::endl;
-        }
-    }
+void Catan::printWinner(const Player& player) {
+    std::cout << "The winner is: " << player.getName() << std::endl;
 }
 
 void Catan::handle_development_card(Player &player, DevelopmentCard &card) {

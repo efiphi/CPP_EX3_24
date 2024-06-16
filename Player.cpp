@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <random>
+#include <algorithm>
 
 namespace ariel {
 
@@ -16,65 +17,68 @@ namespace ariel {
         resources["ore"] = 0;
     }
 
-    void Player::addResource(ariel::Tile::Resource resource, int quantity) {
-        switch(resource) {
-            case ariel::Tile::WOOD:
-                resources["wood"] += quantity;
-                break;
-            case ariel::Tile::BRICK:
-                resources["brick"] += quantity;
-                break;
-            case ariel::Tile::WHEAT:
-                resources["wheat"] += quantity;
-                break;
-            case ariel::Tile::WOOL:
-                resources["wool"] += quantity;
-                break;
-            case ariel::Tile::ORE:
-                resources["ore"] += quantity;
-                break;
-            default:
-                break;
+   void Player::addResource(ariel::Tile::Resource resource, int quantity) {
+    switch(resource) {
+        case ariel::Tile::WOOD:
+            resources["wood"] += quantity;
+            break;
+        case ariel::Tile::BRICK:
+            resources["brick"] += quantity;
+            break;
+        case ariel::Tile::WHEAT:
+            resources["wheat"] += quantity;
+            break;
+        case ariel::Tile::WOOL:
+            resources["wool"] += quantity;
+            break;
+        case ariel::Tile::ORE:
+            resources["ore"] += quantity;
+            break;
+        default:
+            break;
         }
     }
 
-    bool Player::removeResource(ariel::Tile::Resource resource, int quantity) {
-        switch(resource) {
-            case ariel::Tile::WOOD:
-                if (resources["wood"] >= quantity) {
-                    resources["wood"] -= quantity;
-                    return true;
-                }
-                break;
-            case ariel::Tile::BRICK:
-                if (resources["brick"] >= quantity) {
-                    resources["brick"] -= quantity;
-                    return true;
-                }
-                break;
-            case ariel::Tile::WHEAT:
-                if (resources["wheat"] >= quantity) {
-                    resources["wheat"] -= quantity;
-                    return true;
-                }
-                break;
-            case ariel::Tile::WOOL:
-                if (resources["wool"] >= quantity) {
-                    resources["wool"] -= quantity;
-                    return true;
-                }
-                break;
-            case ariel::Tile::ORE:
-                if (resources["ore"] >= quantity) {
-                    resources["ore"] -= quantity;
-                    return true;
-                }
-                break;
-            default:
-                break;
-        }
-        return false;
+
+   bool Player::removeResource(ariel::Tile::Resource resource, int quantity) {
+    switch(resource) {
+        case ariel::Tile::WOOD:
+            if (resources["wood"] >= quantity) {
+                resources["wood"] -= quantity;
+                return true;
+            }
+            break;
+        case ariel::Tile::BRICK:
+            if (resources["brick"] >= quantity) {
+                resources["brick"] -= quantity;
+                return true;
+            }
+            break;
+        case ariel::Tile::WHEAT:
+            if (resources["wheat"] >= quantity) {
+                resources["wheat"] -= quantity;
+                return true;
+            }
+            break;
+        case ariel::Tile::WOOL:
+            if (resources["wool"] >= quantity) {
+                resources["wool"] -= quantity;
+                return true;
+            }
+            break;
+        case ariel::Tile::ORE:
+            if (resources["ore"] >= quantity) {
+                resources["ore"] -= quantity;
+                return true;
+            }
+            break;
+        default:
+            break;
     }
+    return false;
+}
+
+
 
     int Player::getResourceCount(ariel::Tile::Resource resource) const {
         switch(resource) {
@@ -98,18 +102,48 @@ namespace ariel {
     }
 
     void Player::placeSettlement(int set_id, Map &map, Board &board) {
-        board.addSettlement(set_id, *this, map);
-        settlements.push_back(set_id);
-        victory_points++;  // Add a victory point for each settlement
-        std::cout << name << " placed a settlement with ID " << set_id << "." << std::endl;
+    const auto &set = map.getSettlement(set_id);
+    for (const auto &hex : set.hexagons) {
+        Tile::Resource res_enum = convertToResource(hex.first);
+        addResource(res_enum, 1);  // Add the resource from each hex in the settlement
     }
+    board.addSettlement(set_id, *this, map);  // Ensure the board adds the settlement correctly
+    settlements.push_back(set_id);
+    addVictoryPoint();
+    }
+
+    void Player::buySettlement(int settlementId, Map& map, Board& board) {
+    // Check if the player has enough resources
+    if (removeResource(Tile::BRICK, 1) && 
+        removeResource(Tile::WOOD, 1) && 
+        removeResource(Tile::WHEAT, 1) && 
+        removeResource(Tile::WOOL, 1)) {
+        
+        // Place the settlement
+        settlements.push_back(settlementId);
+        victory_points++;
+        std::cout << "Settlement added to tile: " << settlementId << std::endl;
+    } else {
+        // If the player does not have enough resources, revert the resource removal
+        addResource(Tile::BRICK, 1);
+        addResource(Tile::WOOD, 1);
+        addResource(Tile::WHEAT, 1);
+        addResource(Tile::WOOL, 1);
+        std::cerr << "Not enough resources to buy a settlement." << std::endl;
+    }
+}
+
+
+
 
     void Player::placeRoad(const std::vector<std::pair<std::string, int>> &places, Board &board) {
         for (const auto &place : places) {
             std::string road = place.first + " " + std::to_string(place.second);
             roads.push_back(road);
             board.addRoad(place.first, place.second, *this);
+            
         }
+        roadCount++;
     }
 
     void Player::rollDice(Board &board) {
@@ -226,4 +260,91 @@ namespace ariel {
             std::cout << std::endl;
         }
     }
+
+    void Player::yearOfPlenty(ariel::Tile::Resource resource1, ariel::Tile::Resource resource2) {
+    addResource(resource1, 1);
+    addResource(resource2, 1);
+    }
+
+    void Player::roadBuilding(const std::vector<std::pair<std::string, int>>& places1, const std::vector<std::pair<std::string, int>>& places2, Board& board) {
+    placeRoad(places1, board);
+    placeRoad(places2, board);
+    }
+
+    void Player::gainVictoryPoint() {
+    victory_points++;
+    }
+
+    void Player::monopoly(ariel::Tile::Resource resource, std::vector<Player>& otherPlayers) {
+    int totalResource = 0;
+        for (auto& player : otherPlayers) {
+            if (player.getName() != this->name) {
+            int playerResourceCount = player.getResourceCount(resource);
+            std::cout << "Player " << player.getName() << " has " << playerResourceCount << " of resource " << resource << std::endl;
+                if (playerResourceCount > 0) {
+                bool result = player.removeResource(resource, playerResourceCount); // Use removeResource method
+                    if (result) {
+                    totalResource += playerResourceCount;
+                    }
+                std::cout << "Player " << player.getName() << " after removal has " << player.getResourceCount(resource) << " of resource " << resource << std::endl;
+                }
+            }
+        }
+    addResource(resource, totalResource);
+    std::cout << "Total resources collected: " << totalResource << std::endl;
+    }
+
+
+
+
+
+    void Player::playKnight(std::vector<Player>& otherPlayers) {
+    number_of_knights++;
+    if (number_of_knights >= 3) {
+        gainVictoryPoint();
+        gainVictoryPoint();
+    }
+    }
+
+    int Player::getKnightCount() const {
+    return number_of_knights;
+    }
+
+    int Player::getRoadCount() const {
+    return roadCount;
+    }
+
+    void Player::buyCity(int settlementId, Board& board) {
+    // Check if the player has the settlement
+    auto it = std::find(settlements.begin(), settlements.end(), settlementId);
+    if (it != settlements.end()) {
+        // Check if the player has enough resources to buy a city (e.g., 3 ore and 2 wheat)
+        bool hasEnoughOre = removeResource(Tile::ORE, 3);
+        bool hasEnoughWheat = removeResource(Tile::WHEAT, 2);
+
+        if (hasEnoughOre && hasEnoughWheat) {
+            // Upgrade settlement to city
+            settlements.erase(it);
+            cities.push_back(settlementId);
+            cityCount++;
+            victory_points++; // Increment victory points for the new city
+            // Update the board with the new city
+            board.upgradeSettlementToCity(settlementId);
+        } else {
+            // If the player does not have enough resources, revert the resource removal
+            if (hasEnoughOre) addResource(Tile::ORE, 3);
+            if (hasEnoughWheat) addResource(Tile::WHEAT, 2);
+            std::cerr << "Not enough resources to buy a city." << std::endl;
+        }
+    } else {
+        std::cerr << "Settlement not found." << std::endl;
+    }
 }
+
+
+int Player::getCityCount() const {
+    return cityCount;
+}
+
+}    
+

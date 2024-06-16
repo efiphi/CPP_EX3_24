@@ -16,9 +16,10 @@ int main() {
     catan.ChooseStartingPlayer();
     Board &board = catan.getBoard();
     Map map;
+    map.printBoard();
 
-    p1.placeSettlement(2, map, board);
-    p1.placeSettlement(6, map, board);
+    p1.placeSettlement(24, map, board);
+    p1.placeSettlement(19, map, board);
     p2.placeSettlement(10, map, board);
     p2.placeSettlement(11, map, board);
     p3.placeSettlement(15, map, board);
@@ -45,7 +46,7 @@ int main() {
     p2.printPoints();
     p3.printPoints();
 
-    catan.printWinner();
+    catan.check_winner();
 
     return 0;
 }

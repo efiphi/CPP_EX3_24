@@ -20,6 +20,7 @@ public:
     void addSettlement(int set_id, Player &player, Map &map);
     void addRoad(const std::string &resource, int number, Player &player);
     void distribute_resources(int roll);
+    void upgradeSettlementToCity(int settlementId);
 };
 
 }

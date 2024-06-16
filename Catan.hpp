@@ -13,6 +13,7 @@ private:
     std::vector<Player> players;
     Board board;
     int current_turn;
+    void printWinner(const Player& player);
 
 public:
     Catan();
@@ -21,8 +22,7 @@ public:
     Board& getBoard();
     void start_game();
     void play_turn();
-    void check_winner();
-    void printWinner();
+    Player* check_winner();
     void handle_development_card(Player &player, DevelopmentCard &card);
     std::vector<Player>& getPlayers();
     int rollDice() const;
