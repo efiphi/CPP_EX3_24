@@ -146,6 +146,7 @@ Build the project:
 go
 
 make
+
 make test
 
 Run the main:
