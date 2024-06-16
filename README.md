@@ -1,5 +1,5 @@
-###CPP_EX3_24 - Catan Game Implementation
-##Introduction
+# CPP_EX3_24 - Catan Game Implementation
+## Introduction
 
 This project implements a simplified version of the board game Catan. The implementation includes the main components of the game, such as players, resources, settlements, cities, and development cards. The game is programmed in C++ and is designed to simulate the core mechanics of the original board game.
 Game Rules
@@ -12,7 +12,7 @@ The game follows these simplified rules:
     Players can use development cards for special actions.
     The game ends when a player reaches 10 victory points.
 
-##Class Hierarchy
+## Class Hierarchy
 
 The project is structured into several classes, each representing different parts of the game:
 Tile
@@ -21,11 +21,11 @@ Represents the different types of resources in the game.
 
     Resources: WOOD, BRICK, WHEAT, WOOL, ORE, DESERT
 
-Player
+### Player
 
 Represents a player in the game.
 
-    Attributes:
+    **Attributes:**
         name: The name of the player.
         resources: A map of resources and their quantities.
         settlements: A vector of settlement IDs.
@@ -90,8 +90,8 @@ Libraries Used
     <string>: For handling string operations.
     <algorithm>: For using algorithms like std::find.
 
-Methods Description
-Player Class Methods
+## Methods Description
+### Player Class Methods
 
     getName(): Returns the name of the player.
     getVictoryPoints(): Returns the number of victory points the player has.
@@ -110,16 +110,16 @@ Player Class Methods
     getCityCount(): Returns the number of cities the player has.
     getRoadCount(): Returns the number of roads the player has.
 
-Board Class Methods
+### Board Class Methods
 
     upgradeSettlementToCity(int settlementId): Upgrades a settlement to a city on the board.
     rollDiceAndDistributeResources(int roll, Player& player): Rolls the dice and distributes resources to the players based on the roll.
 
-Map Class Methods
+### Map Class Methods
 
     printBoard(): Prints the current state of the game board.
 
-Catan Class Methods
+### Catan Class Methods
 
     Catan(Player& p1, Player& p2, Player& p3): Constructor to initialize the game with three players.
     start_game(): Starts the game by initializing necessary components.
@@ -127,7 +127,7 @@ Catan Class Methods
     check_winner(): Checks if any player has reached 10 victory points and declares the winner.
     printWinner(const Player& player): Prints the name of the winning player.
 
-How to Run
+## How to Run
 
     Clone the repository:
 
@@ -146,6 +146,13 @@ Build the project:
 go
 
 make
+make test
+
+Run the main:
+
+bash
+
+    ./catan
 
 Run the tests:
 
@@ -153,6 +160,6 @@ bash
 
     ./catan_test
 
-Authors
+## Authors
 
     Efi Phillips
