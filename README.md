@@ -1,5 +1,5 @@
-CPP_EX3_24 - Catan Game Implementation
-Introduction
+###CPP_EX3_24 - Catan Game Implementation
+##Introduction
 
 This project implements a simplified version of the board game Catan. The implementation includes the main components of the game, such as players, resources, settlements, cities, and development cards. The game is programmed in C++ and is designed to simulate the core mechanics of the original board game.
 Game Rules
@@ -12,7 +12,7 @@ The game follows these simplified rules:
     Players can use development cards for special actions.
     The game ends when a player reaches 10 victory points.
 
-Class Hierarchy
+##Class Hierarchy
 
 The project is structured into several classes, each representing different parts of the game:
 Tile
