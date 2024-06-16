@@ -25,7 +25,7 @@ Represents the different types of resources in the game.
 
 Represents a player in the game.
 
-    **Attributes:**
+    Attributes:
         name: The name of the player.
         resources: A map of resources and their quantities.
         settlements: A vector of settlement IDs.
@@ -53,7 +53,7 @@ Represents a player in the game.
         getCityCount(): Returns the number of cities the player has.
         getRoadCount(): Returns the number of roads the player has.
 
-Board
+### Board
 
 Represents the game board.
 
@@ -61,14 +61,14 @@ Represents the game board.
         upgradeSettlementToCity(int settlementId): Upgrades a settlement to a city.
         rollDiceAndDistributeResources(int roll, Player& player): Rolls the dice and distributes resources to players.
 
-Map
+### Map
 
 Represents the map of the game.
 
     Methods:
         printBoard(): Prints the current state of the board.
 
-Catan
+### Catan
 
 Represents the game manager.
 
@@ -82,7 +82,7 @@ Represents the game manager.
         check_winner(): Checks if a player has won the game.
         printWinner(const Player& player): Prints the winner of the game.
 
-Libraries Used
+### Libraries Used
 
     <iostream>: For input and output operations.
     <vector>: For using dynamic arrays.
