@@ -1,23 +1,33 @@
 #ifndef TILE_HPP
 #define TILE_HPP
 
-#include <string>
 #include <vector>
+#include <string>
+#include <stdexcept> // For std::invalid_argument
 
 namespace ariel {
 
-class Player; 
+class Player;
 
 class Tile {
 public:
-    std::string resource_type;
-    int number;
-    std::vector<Player*> adjacent_settlements;
+    enum Resource { WOOD, BRICK, WHEAT, WOOL, ORE, DESERT };
 
-    Tile(const std::string &resource, int number);
-    void addSettlement(Player* player);
+private:
+    Resource resource;
+    int number;
+    std::vector<Player*> players;
+
+public:
+    Tile(const Resource &res, int num);
+    Resource getResource() const;
+    int getNumber() const;
+    void addPlayer(Player* player);
+    const std::vector<Player*>& getPlayers() const;
+    static Resource convertToResource(const std::string &res);
+    static std::string resourceToString(Resource res); // Add this
 };
 
 }
- 
+
 #endif // TILE_HPP

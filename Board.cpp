@@ -1,8 +1,5 @@
 #include "Board.hpp"
-#include "Player.hpp"
 #include <iostream>
-#include <algorithm>
-#include <random>
 
 namespace ariel {
 
@@ -11,72 +8,46 @@ Board::Board() {
 }
 
 void Board::setup_board() {
-    std::vector<Tile> all_tiles = {
-        {"wood", 8}, {"wood", 2}, {"wood", 9}, {"wood", 11},
-        {"brick", 3}, {"brick", 6}, {"brick", 12},
-        {"wheat", 5}, {"wheat", 8}, {"wheat", 10}, {"wheat", 5},
-        {"wool", 4}, {"wool", 6}, {"wool", 4}, {"wool", 11},
-        {"iron", 9}, {"iron", 3}, {"iron", 10},
-        {"desert", 0}
-    };
-
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(all_tiles.begin(), all_tiles.end(), g);
-
     tiles = {
-        {{"sea", 0}, {"sea", 0}, {"sea", 0}, {"sea", 0}, {"sea", 0}},
-        {{"sea", 0}, all_tiles[0], all_tiles[1], all_tiles[2], {"sea", 0}},
-        {{"sea", 0}, all_tiles[3], all_tiles[4], all_tiles[5], all_tiles[6], {"sea", 0}},
-        {{"sea", 0}, all_tiles[7], all_tiles[8], all_tiles[9], all_tiles[10], all_tiles[11], {"sea", 0}},
-        {{"sea", 0}, all_tiles[12], all_tiles[13], all_tiles[14], all_tiles[15], {"sea", 0}},
-        {{"sea", 0}, all_tiles[16], all_tiles[17], all_tiles[18], {"sea", 0}},
-        {{"sea", 0}, {"sea", 0}, {"sea", 0}, {"sea", 0}, {"sea", 0}}
+        {Tile::WOOD, 5}, {Tile::BRICK, 3}, {Tile::WHEAT, 10},
+        {Tile::WOOD, 6}, {Tile::WHEAT, 9}, {Tile::WOOL, 11},
+        {Tile::ORE, 9}, {Tile::BRICK, 8}, {Tile::WOOD, 4},
+        {Tile::ORE, 10}, {Tile::WOOL, 6}, {Tile::ORE, 4},
+        {Tile::WOOL, 3}, {Tile::WHEAT, 2}, {Tile::BRICK, 5},
+        {Tile::WOOD, 11}, {Tile::BRICK, 8}, {Tile::WHEAT, 10},
+        {Tile::DESERT, 7}
     };
+
+    for (int i = 0; i < tiles.size(); ++i) {
+        resourceTiles[tiles[i].getResource()].push_back(i);
+    }
 }
 
-void Board::distribute_resources(int roll_result) {
-    for (auto &row : tiles) {
-        for (auto &tile : row) {
-            if (tile.number == roll_result) {
-                for (auto &settlement : tile.adjacent_settlements) {
-                    settlement->resources[tile.resource_type]++;
-                    std::cout << settlement->name << " receives " << tile.resource_type << " from tile " << tile.number << std::endl;
-                }
+void Board::addSettlement(int set_id, Player &player, Map &map) {
+    const auto &set = map.getSettlement(set_id);
+    for (const auto &hex : set.hexagons) {
+        Tile::Resource res_enum = Tile::convertToResource(hex.first);
+        for (auto &tile : tiles) {
+            if (tile.getResource() == res_enum && tile.getNumber() == hex.second) {
+                tile.addPlayer(&player);
+                player.addResource(res_enum, 1);
             }
         }
     }
 }
 
-void Board::addSettlement(const std::string &resource, int number, Player &player) {
-    for (auto &row : tiles) {
-        for (auto &tile : row) {
-            if (tile.resource_type == resource && tile.number == number) {
-                tile.addSettlement(&player);
-                return;
-            }
-        }
-    }
-}
- 
 void Board::addRoad(const std::string &resource, int number, Player &player) {
-    // Implementation for adding a road (simplified)
+    std::cout << "Road added to tile: " << resource << " " << number << std::endl;
 }
 
-void Board::printBoard() {
-    std::cout << "********** CATAN BOARD **********\n";
-    for (const auto &row : tiles) {
-        for (const auto &tile : row) {
-            if (tile.resource_type == "sea") {
-                std::cout << " sea ";
-            } else {
-                std::cout << tile.resource_type << " " << tile.number << " ";
+void Board::distribute_resources(int roll) {
+    for (auto &tile : tiles) {
+        if (tile.getNumber() == roll) {
+            for (auto *player : tile.getPlayers()) {
+                player->addResource(tile.getResource(), 1);
             }
         }
-        std::cout << "\n";
     }
-    std::cout << "*********************************\n";
 }
 
 }
- 

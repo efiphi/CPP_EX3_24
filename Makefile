@@ -1,17 +1,31 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra -O2
+CXXFLAGS = -Wall -std=c++11
 
-TARGET = catan
-SOURCES = main.cpp Board.cpp Tile.cpp Player.cpp DevelopmentCard.cpp Catan.cpp
+OBJS = main.o Board.o Tile.o Player.o DevelopmentCard.o Catan.o Map.o
 
-all: $(TARGET)
+catan: $(OBJS)
+	$(CXX) $(CXXFLAGS) -o catan $(OBJS)
 
-$(TARGET): $(SOURCES)
-	$(CXX) $(CXXFLAGS) $(SOURCES) -o $(TARGET)
+main.o: main.cpp
+	$(CXX) $(CXXFLAGS) -c main.cpp
 
-demo: Demo.cpp Board.cpp Tile.cpp Player.cpp DevelopmentCard.cpp Catan.cpp
-	$(CXX) $(CXXFLAGS) Demo.cpp Board.cpp Tile.cpp Player.cpp DevelopmentCard.cpp Catan.cpp -o demo
+Board.o: Board.cpp Board.hpp
+	$(CXX) $(CXXFLAGS) -c Board.cpp
+
+Tile.o: Tile.cpp Tile.hpp
+	$(CXX) $(CXXFLAGS) -c Tile.cpp
+
+Player.o: Player.cpp Player.hpp
+	$(CXX) $(CXXFLAGS) -c Player.cpp
+
+DevelopmentCard.o: DevelopmentCard.cpp DevelopmentCard.hpp
+	$(CXX) $(CXXFLAGS) -c DevelopmentCard.cpp
+
+Catan.o: Catan.cpp Catan.hpp
+	$(CXX) $(CXXFLAGS) -c Catan.cpp
+
+Map.o: Map.cpp Map.hpp
+	$(CXX) $(CXXFLAGS) -c Map.cpp
 
 clean:
-	rm -f $(TARGET) demo *.o
- 
+	rm -f *.o catan
